@@ -1,0 +1,36 @@
+version: '3.0'
+services:
+  ollyolly_server:
+    build:
+      context: ../.
+      dockerfile: docker_files/ollyolly_server.dockerfile
+    image: ollyolly_server:latest
+    container_name: ollyolly_server
+    command: /scripts/bundle_and_start.sh
+    ports:
+      - '3000:3000'
+      - '3001:3001'
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../.:/apps/ollyolly_server
+      - gems:/gems
+      - ./container_env/pryrc.txt:/root/.pryrc
+      - ./container_env/bash.profile:/root/.bashrc
+      - ./container_env/mysql.cnf:/root/.my.cnf
+      - ../scripts:/scripts
+    links:
+      - percona
+  percona:
+    image: percona:latest
+    container_name: ollyolly_percona
+    volumes:
+      - ollyolly_dev_db:/var/lib/mysql
+      - ./container_env/mysql.cnf:/etc/mysql/conf.d/ollyolly.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_DATABASE: ollyolly_development
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+volumes:
+  gems:
+  ollyolly_dev_db:
