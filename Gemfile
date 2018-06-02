@@ -5,6 +5,8 @@ gem 'mysql2', '~> 0.5.1'
 gem 'puma', '~> 3.11.4'
 gem 'execjs', '~> 2.7.0'
 
+gem 'rest-client', '~> 2.0.2'
+
 gem 'devise_token_auth', '~> 0.1.43'
 
 group :development, :test do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_25_050348) do
+ActiveRecord::Schema.define(version: 2018_05_31_212200) do
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "provider", default: "email", null: false
@@ -36,10 +36,23 @@ ActiveRecord::Schema.define(version: 2018_05_25_050348) do
     t.text "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "login"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
+  end
+
+  create_table "yodlee_users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "yodlee_user_id"
+    t.string "password"
+    t.string "user_session"
+    t.datetime "user_session_expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_yodlee_users_on_user_id", unique: true
+    t.index ["yodlee_user_id"], name: "index_yodlee_users_on_yodlee_user_id"
   end
 
 end
