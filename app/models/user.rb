@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   end
 
   def register_yodlee_user
-    YodleeApi.register_user(self)
+    # TODO: Uncomment when we have a real yodlee account
+    # YodleeApi.register_user(self)
   end
 end

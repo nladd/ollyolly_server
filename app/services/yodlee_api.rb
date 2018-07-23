@@ -1,8 +1,6 @@
 
 module YodleeApi
 
-  FASTLINK_APP_ID = '10003600'
-
   class << self
     attr_accessor :config
 
@@ -76,18 +74,27 @@ module YodleeApi
                                          user_session_expires_at: Time.zone.now + (30.minutes - 1.second))
     end
 
-    def user_logged_in?(user)
-      user.yodlee_user&.user_session_expires_at.nil? ? false : Time.zone.now < user.yodlee_user.user_session_expires_at
+    def user_access_tokens(user)
+      yodlee_session(user)
+
+      url = config.base_url + "user/accessTokens?appIds=#{config.fastlink_app_id}"
+      get_request(url, add_auth_headers(config.headers, user))
     end
 
-    def user_access_tokens(user)
+    def yodlee_session(user)
       cobrand_login unless logged_in?
       login_user(user) unless user_logged_in?(user)
 
-      url = config.base_url + "user/accessTokens?appIds=#{FASTLINK_APP_ID}"
+      {cobSession: config.cobSession, userSession: user.yodlee_user.user_session}
+    end
 
+    def accounts(user)
+      yodlee_session(user)
+
+      url = config.base_url + 'accounts'
       get_request(url, add_auth_headers(config.headers, user))
     end
+
 
     private
 
@@ -96,8 +103,6 @@ module YodleeApi
         resp = RestClient.post(url, params.to_json, headers)
       rescue RestClient::Unauthorized => err
         err.response
-      rescue StandardError => err
-        throw err
       else
         JSON.parse(resp.body)
       end
@@ -118,13 +123,19 @@ module YodleeApi
     def add_auth_headers(headers, user)
       headers.merge({'Authorization' => "cobSession=#{config.cobSession},userSession=#{user.yodlee_user.user_session}"})
     end
-  end
+
+    def user_logged_in?(user)
+      user.yodlee_user&.user_session_expires_at.nil? ? false : Time.zone.now < user.yodlee_user.user_session_expires_at
+    end
+
+  end # close class methods
 
 
 end
 
 class Configuration
   attr_accessor :base_url, :username, :password, :locale, :headers, :cobSession, :cobSession_expires_at
+  attr_accessor :fastlink_app_id, :fastlink_url
 
   def initialize(opts = {})
     @base_url = 'donotreply@example.com' || 'https://developer.api.yodlee.com/ysl/'

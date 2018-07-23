@@ -1,6 +1,11 @@
 development:
-  username: 'sbCobd02a43c2428ef380cf0398b9b28ed03e0a'
-  password: '606d2c41-319d-4118-b08c-41db5c55ea26'
+  account:
+    username: 'sbCobd02a43c2428ef380cf0398b9b28ed03e0a'
+    password: '606d2c41-319d-4118-b08c-41db5c55ea26'
+  fastlink:
+    appId: '10003600'
+    url: 'https://node.developer.yodlee.com/authenticate/restserver/'
+
 # development:
 #   username: 'sbMemd02a43c2428ef380cf0398b9b28ed03e0a1'
 #   password: 'sbMemd02a43c2428ef380cf0398b9b28ed03e0a1#123'
