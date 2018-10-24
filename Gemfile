@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
-gem 'rails', '~> 5.2.0'
+gem 'execjs', '~> 2.7.0'
 gem 'mysql2', '~> 0.5.1'
 gem 'puma', '~> 3.11.4'
-gem 'execjs', '~> 2.7.0'
+gem 'rails', '~> 5.2.0'
 
 gem 'rest-client', '~> 2.0.2'
 
@@ -12,6 +14,7 @@ gem 'devise_token_auth', '~> 0.1.43'
 group :development, :test do
   gem 'pry', '~> 0.11.3'
   gem 'pry-byebug', '~> 3.6.0'
+  gem 'rubocop'
 end
 
 group :development do

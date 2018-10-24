@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require Rails.root.join('app', 'services', 'yodlee_api').to_s
 
 YodleeApi.configure do |config|

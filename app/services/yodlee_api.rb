@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 
 module YodleeApi
-
   class << self
     attr_accessor :config
 
@@ -14,12 +14,11 @@ module YodleeApi
     end
 
     def cobrand_login
-      url = config.base_url + 'cobrand/login/'
+      url = config.base_url + '/cobrand/login/'
       params = { cobrand:
-                 {cobrandLogin: config.username,
-                  cobrandPassword: config.password,
-                  locale: self.config.locale}
-      }
+                 { cobrandLogin: config.username,
+                   cobrandPassword: config.password,
+                   locale: self.config.locale } }
 
       response = post_request(url, params, config.headers)
 
@@ -29,13 +28,14 @@ module YodleeApi
 
     def logged_in?
       return false unless configured?
+
       self.config.cobSession_expires_at.nil? ? false : Time.zone.now < self.config.cobSession_expires_at
     end
 
     def register_user(user)
       cobrand_login unless logged_in?
 
-      url = config.base_url + 'user/register/'
+      url = config.base_url + '/user/register/'
       #### TODO ######
       # encrypt password before storing
       # ##########
@@ -45,11 +45,11 @@ module YodleeApi
         password: yodlee_password,
         email: user.email,
         preferences: {
-          currency: "USD",
-          dateFormat: "MM/dd/yyyy",
-          locale: "en_US" }
+          currency: 'USD',
+          dateFormat: 'MM/dd/yyyy',
+          locale: 'en_US'
         }
-      }
+      } }
 
       response = post_request(url, params, config.headers.merge('Authorization' => "cobSession=#{config.cobSession}"))
       YodleeUser.create(user: user,
@@ -61,13 +61,12 @@ module YodleeApi
 
     def login_user(user)
       register_user(user) unless user.yodlee_user.present?
-      url = config.base_url + 'user/login/'
+      url = config.base_url + '/user/login/'
       params = { user: {
         loginName: user.login,
         password: user.yodlee_user.password,
         locale: 'en_US'
-        }
-      }
+      } }
 
       response = post_request(url, params, config.headers.merge('Authorization' => "cobSession=#{config.cobSession}"))
       user.yodlee_user.update_attributes(user_session: response['user']['session']['userSession'],
@@ -77,7 +76,7 @@ module YodleeApi
     def user_access_tokens(user)
       yodlee_session(user)
 
-      url = config.base_url + "user/accessTokens?appIds=#{config.fastlink_app_id}"
+      url = config.base_url + "/user/accessTokens?appIds=#{config.fastlink_app_id}"
       get_request(url, add_auth_headers(config.headers, user))
     end
 
@@ -85,52 +84,60 @@ module YodleeApi
       cobrand_login unless logged_in?
       login_user(user) unless user_logged_in?(user)
 
-      {cobSession: config.cobSession, userSession: user.yodlee_user.user_session}
+      { cobSession: config.cobSession, userSession: user.yodlee_user.user_session }
     end
 
     def accounts(user)
       yodlee_session(user)
 
-      url = config.base_url + 'accounts'
-      get_request(url, add_auth_headers(config.headers, user))
+      url = config.base_url + '/accounts'
+      resp = get_request(url, add_auth_headers(config.headers, user))
+
+      resp['account']
     end
 
+    def transactions(user, account, from_date = 30.days.ago, to_date = Time.zone.today)
+      yodlee_session(user)
+
+      params = { container: account.container,
+                 accountId: account.account_id,
+                 from_date: from_date,
+                 to_date: to_date }
+
+      url = config.base_url + '/transactions' + "?#{params.to_query}"
+      resp = get_request(url, add_auth_headers(config.headers, user))
+
+      resp['transaction']
+    end
 
     private
 
     def post_request(url, params, headers)
-      begin
-        resp = RestClient.post(url, params.to_json, headers)
-      rescue RestClient::Unauthorized => err
-        err.response
-      else
-        JSON.parse(resp.body)
-      end
+      resp = RestClient.post(url, params.to_json, headers)
+    rescue RestClient::Unauthorized => err
+      err.response
+    else
+      JSON.parse(resp.body)
     end
 
     def get_request(url, headers)
-      begin
-        resp = RestClient.get(url, headers)
-      rescue RestClient::Unauthorized => err
-        err.response
-      rescue StandardError => err
-        throw err
-      else
-        JSON.parse(resp.body)
-      end
+      resp = RestClient.get(url, headers)
+    rescue RestClient::Unauthorized => err
+      err.response
+    rescue StandardError => err
+      throw err
+    else
+      JSON.parse(resp.body)
     end
 
     def add_auth_headers(headers, user)
-      headers.merge({'Authorization' => "cobSession=#{config.cobSession},userSession=#{user.yodlee_user.user_session}"})
+      headers.merge('Authorization' => "cobSession=#{config.cobSession},userSession=#{user.yodlee_user.user_session}")
     end
 
     def user_logged_in?(user)
       user.yodlee_user&.user_session_expires_at.nil? ? false : Time.zone.now < user.yodlee_user.user_session_expires_at
     end
-
   end # close class methods
-
-
 end
 
 class Configuration
@@ -142,7 +149,6 @@ class Configuration
     @username = opts[:username]
     @password = opts[:password]
     @locale = opts[:locale] || 'en_US'
-    @headers = opts[:headers] || {'Content-Type' => 'application/json', 'Api-Version' => '1.1', 'Cobrand-Name' => 'restserver'}
+    @headers = opts[:headers] || { 'Content-Type' => 'application/json', 'Api-Version' => '1.1', 'Cobrand-Name' => 'restserver' }
   end
 end
-

@@ -10,7 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_31_212200) do
+ActiveRecord::Schema.define(version: 2018_10_24_034152) do
+
+  create_table "accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "account_name"
+    t.string "account_type"
+    t.string "account_status"
+    t.integer "provider_id"
+    t.integer "provider_account_id"
+    t.string "container"
+    t.integer "account_id"
+    t.string "provider_name"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_accounts_on_account_id"
+    t.index ["provider_account_id"], name: "index_accounts_on_provider_account_id"
+    t.index ["provider_id"], name: "index_accounts_on_provider_id"
+    t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
+
+  create_table "transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.integer "transaction_id"
+    t.string "base_type"
+    t.string "transaction_type"
+    t.date "transaction_date"
+    t.string "status"
+    t.string "symbol"
+    t.float "twr"
+    t.integer "account_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["transaction_id"], name: "index_transactions_on_transaction_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
+  end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "provider", default: "email", null: false
