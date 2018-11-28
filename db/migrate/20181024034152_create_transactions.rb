@@ -9,6 +9,12 @@ class CreateTransactions < ActiveRecord::Migration[5.2]
         t.string :status
         t.string :symbol
         t.float :twr
+        t.float :quantity
+        t.float :price
+        t.float :beginning_balance
+        t.float :ending_balance
+        t.datetime :created_date
+        t.datetime :last_updated
 
         t.integer :account_id
         t.integer :user_id

@@ -87,6 +87,17 @@ module YodleeApi
       { cobSession: config.cobSession, userSession: user.yodlee_user.user_session }
     end
 
+    def account(user, account)
+      yodlee_session(user)
+
+      params = { container: account.container }
+
+      url = config.base_url + "/accounts/#{account.account_id}?#{params.to_query}"
+      resp = get_request(url, add_auth_headers(config.headers, user))
+
+      resp['account'].first
+    end
+
     def accounts(user)
       yodlee_session(user)
 
@@ -96,7 +107,7 @@ module YodleeApi
       resp['account']
     end
 
-    def transactions(user, account, from_date = 30.days.ago, to_date = Time.zone.today)
+    def transactions(user, account, from_date = 120.days.ago, to_date = Time.zone.today)
       yodlee_session(user)
 
       params = { container: account.container,
@@ -108,6 +119,46 @@ module YodleeApi
       resp = get_request(url, add_auth_headers(config.headers, user))
 
       resp['transaction']
+    end
+
+    def historical_balances(user, account, from_date, to_date)
+      yodlee_session(user)
+
+      params = { accountId: account.account_id,
+                 fromDate: from_date.to_s(:db),
+                 toDate: to_date.to_s(:db),
+                 interval: 'D' }
+
+      url = config.base_url + '/accounts/historicalBalances' + "?#{params.to_query}"
+      resp = get_request(url, add_auth_headers(config.headers, user))
+
+      resp['account']
+    end
+
+    def holdings(user, account)
+      yodlee_session(user)
+
+      params = { accountId: account.account_id}
+
+      url = config.base_url + '/holdings' + "?#{params.to_query}"
+      resp = get_request(url, add_auth_headers(config.headers, user))
+
+      resp['holding']
+    end
+
+    def transaction_summary(user, account, from_date, to_date)
+      yodlee_session(user)
+
+      params = { accountId: account.account_id,
+                 fromDate: from_date.to_s(:db),
+                 toDate: to_date.to_s(:db),
+                 interval: 'D' }
+
+      url = config.base_url + '/derived/transactionSummary' + "?#{params.to_query}"
+      binding.pry
+      resp = get_request(url, add_auth_headers(config.headers, user))
+
+      resp['transactionSummary']
     end
 
     private

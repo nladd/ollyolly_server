@@ -38,10 +38,37 @@ ActiveRecord::Schema.define(version: 2018_10_24_034152) do
     t.string "status"
     t.string "symbol"
     t.float "twr"
+    t.float "quantity"
+    t.float "price"
+    t.float "beginning_balance"
+    t.float "ending_balance"
+    t.datetime "created_date"
+    t.datetime "last_updated"
     t.integer "account_id"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["transaction_id"], name: "index_transactions_on_transaction_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
+  end
+
+  create_table "transactions_archive", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.integer "transaction_id"
+    t.string "base_type"
+    t.string "transaction_type"
+    t.date "transaction_date"
+    t.string "status"
+    t.string "symbol"
+    t.float "twr"
+    t.float "quantity"
+    t.float "price"
+    t.integer "account_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "beginning_balance"
+    t.float "ending_balance"
     t.index ["account_id"], name: "index_transactions_on_account_id"
     t.index ["transaction_id"], name: "index_transactions_on_transaction_id"
     t.index ["user_id"], name: "index_transactions_on_user_id"

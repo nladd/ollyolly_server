@@ -16,6 +16,10 @@ class Account < ApplicationRecord
                                          transaction_date: transaction['transactionDate'],
                                          status: transaction['status'],
                                          symbol: transaction['symbol'],
+                                         quantity: transaction['quantity'],
+                                         price: transaction&.dig('price', 'amount'),
+                                         created_date: transaction['createdDate'],
+                                         last_updated: transaction['lastUpdated'],
                                          account_id: id,
                                          user_id: user_id)
 

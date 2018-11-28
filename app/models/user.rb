@@ -18,7 +18,7 @@ class User < ApplicationRecord
 
   def save_accounts(accounts)
     accounts.each do |account|
-      next if Account.exists?(account_id: account['account_id'], user_id: id)
+      next if Account.exists?(account_id: account['id'], user_id: id)
 
       self.accounts << Account.create(account_name: account['accountName'],
                                       account_type: account['accountType'],

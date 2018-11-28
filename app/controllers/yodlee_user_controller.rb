@@ -15,12 +15,14 @@ class YodleeUserController < ApplicationController
   def transactions
     if account = current_user.accounts.find_by(account_id: params[:account_id])
       transactions = YodleeApi.transactions(current_user, account)
+      transactions = transactions&.sort_by { |tx| tx['transactionDate'] }
 
-      account.save_transactions(transactions)
+      account.save_transactions(transactions) if transactions.present?
 
       render json: transactions.to_json
     else
       render plain: 'AccountNotFound', status: 404
     end
   end
+
 end

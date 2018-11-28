@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class FastlinkController < ActionController::Base
-  before_action :authenticate_user!
+#  before_action :authenticate_user!
 
   def fastlink
+    @current_user = User.first
     resp = YodleeApi.user_access_tokens(current_user)
     @access_tokens = resp['user']['accessTokens'].first
 
