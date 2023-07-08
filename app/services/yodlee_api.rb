@@ -155,7 +155,6 @@ module YodleeApi
                  interval: 'D' }
 
       url = config.base_url + '/derived/transactionSummary' + "?#{params.to_query}"
-      binding.pry
       resp = get_request(url, add_auth_headers(config.headers, user))
 
       resp['transactionSummary']

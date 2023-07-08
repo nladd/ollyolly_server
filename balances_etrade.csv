@@ -1,0 +1,4 @@
+isAsset,date,asOfDate,balance,dataSourceType
+true,2018-11-27,2018-11-27,"{""amount""=>0.01, ""currency""=>""USD""}",C
+true,2018-11-28,2018-11-28,"{""amount""=>2420.28, ""currency""=>""USD""}",S
+true,2018-11-29,2018-11-29,"{""amount""=>2422.71, ""currency""=>""USD""}",S

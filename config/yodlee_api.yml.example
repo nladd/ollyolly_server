@@ -1,0 +1,7 @@
+development:
+  account:
+    username:
+    password:
+  fastlink:
+    appId:
+    url: 'https://node.developer.yodlee.com/authenticate/restserver/'
